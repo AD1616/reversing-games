@@ -3,7 +3,7 @@
 ```
 def initial(board):
     int lastMoved // will be 1 if player 1 moved last, -1 if player 2 moved last
-    List moves // sequence of moves in reversed game
+    List moves // sequence of moves in reversed game, 2D
 
     if any row, column, or diagonal adds up to 3:
         //player1 won and moved last
@@ -18,19 +18,24 @@ def initial(board):
         else:
             //draw and player2 moved last
             lastMoved = -1
-    
-    reverse(board, lastMoved, moves)
 
-    return moves
+    moves = reverse(board, lastMoved, moves)
 
 def reverse(board, lastMoved, moves):
+    counter = 9
     for every square on board:
         if square == lastMoved:
             square = 0 // making square empty
             bestMove = findBestMove(board) // calls function which uses minimax to find the best move
             if bestMove is square:
+                counter -= 1
                 moves.add(square)
                 reverse(board, -1 * lastMoved) // calling our function with the removed square and opposite player
+            else:
+                square = 1
+                reverse(board, lastMoved)
+            if counter == 1:
+                return moves
             square = lastMoved
 
 def findBestMove(board):
