@@ -31,9 +31,6 @@ def reverse(board, lastMoved, moves):
                 counter -= 1
                 moves.add(square)
                 reverse(board, -1 * lastMoved) // calling our function with the removed square and opposite player
-            else:
-                square = 1
-                reverse(board, lastMoved)
             if counter == 1:
                 return moves
             square = lastMoved
