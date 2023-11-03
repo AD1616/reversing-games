@@ -22,19 +22,14 @@ def initial(board):
     moves = reverse(board, lastMoved, moves)
 
 def reverse(board, lastMoved, moves):
-    counter = 9
     for every square on board:
         if square == lastMoved:
             square = 0 // making square empty
             bestMove = findBestMove(board) // calls function which uses minimax to find the best move
             if bestMove is square:
-                counter -= 1
                 moves.add(square)
                 reverse(board, -1 * lastMoved) // calling our function with the removed square and opposite player
-            if counter == 1:
-                return moves
             square = lastMoved
-
 
 
 Function isMovesLeft(board):
