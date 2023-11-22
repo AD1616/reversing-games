@@ -2,7 +2,8 @@ import copy
 
 
 def initial(board):
-    moves = [board]
+    initial_state = copy.deepcopy(board)
+    moves = [initial_state]
     pos = 0
     neg = 0
     for i in range(len(board)):
@@ -17,7 +18,7 @@ def initial(board):
     else:
         last_moved = -1
     
-    reverse(copy.deepcopy(board), last_moved, moves, 8)
+    reverse(initial_state, copy.deepcopy(initial_state), last_moved, moves, 8)
 
     return moves
 
@@ -35,8 +36,8 @@ move_dict = {
 }
 
 
-def reverse(board, last_moved, moves, move_number):
-    if move_number == 0:
+def reverse(initial_state, board, last_moved, moves, move_number):
+    if move_number == -1:
         return True
 
     found = False
@@ -55,7 +56,7 @@ def reverse(board, last_moved, moves, move_number):
                     move_dict[move_number].add((i, j))
                     found = True
                     # if it was the best move, then continue to the next move
-                    done = reverse(copy.deepcopy(board), -1 * last_moved, moves, move_number - 1)
+                    done = reverse(initial_state, copy.deepcopy(board), -1 * last_moved, moves, move_number - 1)
                     if done:
                         return True
                     break
@@ -66,7 +67,7 @@ def reverse(board, last_moved, moves, move_number):
     # potential board state
     if not found:
         moves.pop()
-        done = reverse(copy.deepcopy(moves[-1]), -1 * last_moved, moves, move_number + 1)
+        done = reverse(initial_state, copy.deepcopy(moves[-1]), -1 * last_moved, moves, move_number + 1)
         if done:
             return True
 
@@ -171,9 +172,16 @@ def tester():
     ]
 
     moves = initial(ex1)
+
+    count = 0
     for move in moves:
-        print(move)
-    
+        for i in range(3):
+            print(move[i])
+        print()
+        count += 1
+        if count % 3 == 0:
+            print()
+
 
 tester()
 
