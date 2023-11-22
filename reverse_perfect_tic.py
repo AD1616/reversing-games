@@ -66,7 +66,9 @@ def reverse(board, last_moved, moves, move_number):
     # potential board state
     if not found:
         moves.pop()
-        reverse(copy.deepcopy(moves[-1]), -1 * last_moved, moves, move_number + 1)
+        done = reverse(copy.deepcopy(moves[-1]), -1 * last_moved, moves, move_number + 1)
+        if done:
+            return True
 
 
 def evaluate(board):
@@ -77,7 +79,7 @@ def evaluate(board):
             elif board[row][0] == -1:
                 return -10
   
-    for col in range(3) : 
+    for col in range(3):
         if board[0][col] == board[1][col] and board[1][col] == board[2][col]:
             if board[0][col] == 1:
                 return 10
@@ -154,7 +156,7 @@ def find_best_moves(board, last_moved, move_number):
                     best_moves.add((i, j))
                 elif move_val == best_val:
                     best_moves.add((i, j))
-  
+
                 # Undo the move  
                 board[i][j] = 0
 
