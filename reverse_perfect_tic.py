@@ -158,7 +158,6 @@ def find_best_moves(board, last_moved, move_number):
                 # Undo the move  
                 board[i][j] = 0
 
-    print(best_val)
     return best_moves
 
 
