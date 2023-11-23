@@ -3,7 +3,7 @@ import copy
 
 def initial(board):
     initial_state = copy.deepcopy(board)
-    moves = [initial_state]
+    moves = [[initial_state]]
     pos = 0
     neg = 0
     for i in range(len(board)):
@@ -38,6 +38,9 @@ move_dict = {
 
 def reverse(initial_state, board, last_moved, moves, move_number):
     if move_number == -1:
+        initial_state = copy.deepcopy(initial_state)
+        moves.append([initial_state])
+        reverse(initial_state, copy.deepcopy(initial_state), last_moved, moves, 8)
         return True
 
     found = False
@@ -52,13 +55,11 @@ def reverse(initial_state, board, last_moved, moves, move_number):
                 # and seeing if the best move matches the square we cleared
                 best_moves = find_best_moves(copy.deepcopy(board), last_moved, move_number)
                 if (i, j) in best_moves:
-                    moves.append(copy.deepcopy(board))
+                    moves[-1].append(copy.deepcopy(board))
                     move_dict[move_number].add((i, j))
                     found = True
                     # if it was the best move, then continue to the next move
-                    done = reverse(initial_state, copy.deepcopy(board), -1 * last_moved, moves, move_number - 1)
-                    if done:
-                        return True
+                    return reverse(initial_state, copy.deepcopy(board), -1 * last_moved, moves, move_number - 1)
                     break
                 board[i][j] = last_moved
 
@@ -66,10 +67,12 @@ def reverse(initial_state, board, last_moved, moves, move_number):
     # then we are going to remove the last move and try to find another
     # potential board state
     if not found:
-        moves.pop()
-        done = reverse(initial_state, copy.deepcopy(moves[-1]), -1 * last_moved, moves, move_number + 1)
-        if done:
+        if len(moves[-1]) == 1:
+            moves.pop()
             return True
+        move_dict[move_number].clear()
+        moves[-1].pop()
+        return reverse(initial_state, copy.deepcopy(moves[-1][-1]), -1 * last_moved, moves, move_number + 1)
 
 
 def evaluate(board):
@@ -104,20 +107,18 @@ def evaluate(board):
 
 def minimax(board, depth, max_depth, last_moved):
     best = 1000 * -1 * last_moved
-    if depth == max_depth:
-        if last_moved == 1:
-            return max(best, evaluate(board))
-        else:
-            return min(best, evaluate(board))
      
-    score = evaluate(board) 
+    score = evaluate(board)
 
     if score == 10:
         return score
 
     if score == -10:
         return score
-  
+
+    if depth == max_depth:
+        return 0
+
     for i in range(3):
         for j in range(3):
             if board[i][j] == 0:
@@ -132,6 +133,7 @@ def minimax(board, depth, max_depth, last_moved):
 
                 # Undo the move
                 board[i][j] = 0
+
     return best
 
 
@@ -165,21 +167,23 @@ def find_best_moves(board, last_moved, move_number):
 
 
 def tester():
-    ex1 = [
-        [-1, 1, 1],
-        [1, -1, -1],
-        [-1, 1, 1]
+    # ex1 = [
+    #     [-1, 1, 1],
+    #     [1, -1, -1],
+    #     [-1, 1, 1]
+    # ]
+    ex2 = [
+        [1, 1, -1],
+        [-1, -1, 1],
+        [1, 1, -1]
     ]
 
-    moves = initial(ex1)
+    games = initial(ex2)
 
-    count = 0
-    for move in moves:
-        for i in range(3):
-            print(move[i])
-        print()
-        count += 1
-        if count % 3 == 0:
+    for game in games:
+        for move in game:
+            for i in range(3):
+                print(move[i])
             print()
 
 
