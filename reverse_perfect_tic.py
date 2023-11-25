@@ -105,7 +105,7 @@ def evaluate(board):
     return 0
 
 
-def minimax(board, depth, max_depth, last_moved):
+def minimax(board, depth, max_depth, last_moved, alpha, beta):
     best = 1000 * -1 * last_moved
      
     score = evaluate(board)
@@ -127,9 +127,15 @@ def minimax(board, depth, max_depth, last_moved):
 
                 # Call minimax recursively and choose
                 if last_moved == 1:
-                    best = max(best, minimax(copy.deepcopy(board), depth + 1, max_depth, -1 * last_moved))
+                    best = max(best, minimax(copy.deepcopy(board), depth + 1, max_depth, -1 * last_moved, alpha, beta))
+                    alpha = max(alpha, best)
+                    if beta <= alpha:
+                        break
                 else:
-                    best = min(best, minimax(copy.deepcopy(board), depth + 1, max_depth, -1 * last_moved))
+                    best = min(best, minimax(copy.deepcopy(board), depth + 1, max_depth, -1 * last_moved, alpha, beta))
+                    beta = min(beta, best)
+                    if beta <= alpha:
+                        break
 
                 # Undo the move
                 board[i][j] = 0
@@ -151,7 +157,7 @@ def find_best_moves(board, last_moved, move_number):
                 board[i][j] = last_moved 
   
                 max_depth = 8 - move_number
-                move_val = minimax(copy.deepcopy(board), 0, max_depth, -1 * last_moved)
+                move_val = minimax(copy.deepcopy(board), 0, max_depth, -1 * last_moved, -10000, 10000)
 
                 if (last_moved == 1 and move_val > best_val) or (last_moved == -1 and move_val < best_val):
                     best_val = move_val
